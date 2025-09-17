@@ -1,4 +1,4 @@
-import { LoginPage } from '@pages/Auth/LoginPage';
+import { LoginPage } from './pages/Auth/LoginPage';
 import './index.css';
 
 const App = () => {

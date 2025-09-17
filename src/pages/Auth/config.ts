@@ -4,12 +4,12 @@ const passwordValidationRegex = /^(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 
 export const authSchema = z.object({
     username: z.string()
-        .nonempty({message: 'Username is required'})
-        .min(3, {message: 'Username min length is 3 characters.'})
-        .max(100, {message: 'Username max length is 100 characters.'}),
+        .nonempty({message: 'Поле обязательно к заполнению'})
+        .min(3, {message: 'Минимальная длина строки 3 символа'})
+        .max(100, {message: 'Максимальная длина строки 100 символов'}),
     password: z.string()
-        .min(8, {message: 'Password min length is 8 characters.'})
-        .refine(val => passwordValidationRegex.test(val), {message: 'The password must contain at least 1 number and 1 character.'})
+        .min(8, {message: 'Минимальная длина пароля 8 символов'})
+        .refine(val => passwordValidationRegex.test(val), {message: 'пароль должен содержать 1 цифру и 1 букву'})
 })
 
 export type AuthSchema = z.infer<typeof authSchema>;
