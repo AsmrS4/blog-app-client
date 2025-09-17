@@ -1,8 +1,12 @@
 import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(), 
+    tailwindcss()
+  ],
   server: {
     port: 5500,
     host: 'localhost',
@@ -24,8 +28,12 @@ export default defineConfig({
       {find: '@styles', replacement:'/src/styles'}
     ]
   },
-  esbuild: {
-    jsxInject: `import React from 'react'`,
-    treeShaking: true //команда, удаляющая неиспользуемый код
-  }
+  // esbuild: {
+  //   jsxFactory: 'h',
+  //   jsxFragment: 'Fragment',
+  //   include: /\.[jt]sx?$/,
+  //   exclude: [],
+  //   jsxInject: `import React from 'react'`,
+  //   treeShaking: true //команда, удаляющая неиспользуемый код
+  // }
 })
