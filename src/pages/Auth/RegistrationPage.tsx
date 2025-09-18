@@ -4,8 +4,12 @@ import { Button, Form, Input } from 'antd';
 import { registerSchema, type RegisterSchema } from './config';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ContainerCentered } from '@components/Container/Container';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { RegisterProps } from '@models/User';
+import { useDispatch } from 'react-redux';
+import { registerUser } from '@store/Auth/authActions';
+import { ErrorToast, SuccessToast } from '@components/Toasts';
+import { AxiosError } from 'axios';
 
 export const RegistrationPage = () => {
     const {
@@ -20,8 +24,19 @@ export const RegistrationPage = () => {
             confirmPassword: '',
         },
     });
-    const onSubmit = (form: RegisterProps) => {
-        console.log(form);
+    const dispatch: any = useDispatch();
+    const navigate: any = useNavigate();
+    const onSubmit = async (form: RegisterProps) => {
+        try {
+            await dispatch(registerUser(form));
+            SuccessToast('Добро пожаловать');
+            navigate('/');
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                return ErrorToast(error.response?.data.message);
+            }
+            return ErrorToast('Что-то пошло не так');
+        }
     };
     return (
         <ContainerCentered>
