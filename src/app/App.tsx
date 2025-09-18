@@ -3,6 +3,7 @@ import { PrivateRoute } from './PrivateRoute';
 import { LoginPage } from '@pages/Auth/LoginPage';
 import { RegistrationPage } from '@pages/Auth/RegistrationPage';
 import '../index.css';
+import { ToastContainer } from 'react-toastify';
 
 const App = () => {
     return (
@@ -16,6 +17,7 @@ const App = () => {
                     </Route>
                 </Routes>
             </BrowserRouter>
+            <ToastContainer limit={3} />
         </main>
     );
 };

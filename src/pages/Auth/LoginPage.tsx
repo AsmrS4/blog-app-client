@@ -1,15 +1,16 @@
-import { type SubmitHandler, useForm, Controller } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { Button, Form, Input } from 'antd';
+import { useDispatch } from 'react-redux';
 import { UserOutlined, EyeInvisibleOutlined, EyeTwoTone, LockOutlined } from '@ant-design/icons';
 import { authSchema, type AuthSchema } from './config';
 import { ContainerCentered } from '@components/Container/Container';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'react-router-dom';
-
-interface AuthProps {
-    username: string;
-    password: string;
-}
+import { Link, useNavigate } from 'react-router-dom';
+import type { AuthProps } from '@models/User';
+import { loginUser } from '@store/Auth/authActions';
+import { ErrorToast, SuccessToast } from '@components/Toasts';
+import { AxiosError } from 'axios';
+import { clearSession } from '@store/Auth/authReducer';
 
 export const LoginPage = () => {
     const {
@@ -23,9 +24,23 @@ export const LoginPage = () => {
             password: '',
         },
     });
-    const onSubmit = (form: AuthProps) => {
-        console.log(form);
+    const dispatch: any = useDispatch();
+    const navigate: any = useNavigate();
+    const onSubmit = async (form: AuthProps) => {
+        try {
+            await dispatch(loginUser(form));
+            SuccessToast('Добро пожаловать');
+            navigate('/');
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                return ErrorToast(error.response?.data.message);
+            }
+            return ErrorToast('Что-то пошло не так');
+        }
     };
+    React.useEffect(() => {
+        dispatch(clearSession());
+    }, []);
     return (
         <ContainerCentered>
             <div className='flex flex-col items-start max-w-[384px] w-full h-[520px] gap-6 px-3 box-border'>

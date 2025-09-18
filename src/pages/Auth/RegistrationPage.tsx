@@ -5,12 +5,7 @@ import { registerSchema, type RegisterSchema } from './config';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ContainerCentered } from '@components/Container/Container';
 import { Link } from 'react-router-dom';
-
-interface RegisterProps {
-    username: string;
-    password: string;
-    confirmPassword: string;
-}
+import type { RegisterProps } from '@models/User';
 
 export const RegistrationPage = () => {
     const {
