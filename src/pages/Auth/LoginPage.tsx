@@ -1,21 +1,20 @@
-import { type SubmitHandler, useForm, Controller } from 'react-hook-form';
-import { Button, Form, Input, Space } from 'antd';
+import { useForm, Controller } from 'react-hook-form';
+import { Button, Form, Input } from 'antd';
+import { useDispatch } from 'react-redux';
 import { UserOutlined, EyeInvisibleOutlined, EyeTwoTone, LockOutlined } from '@ant-design/icons';
 import { authSchema, type AuthSchema } from './config';
 import { ContainerCentered } from '@components/Container/Container';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'antd/es/typography/Link';
-
-interface AuthProps {
-    username: string;
-    password: string;
-}
+import { Link, useNavigate } from 'react-router-dom';
+import type { AuthProps } from '@models/User';
+import { loginUser } from '@store/Auth/authActions';
+import { ErrorToast, InfoToast } from '@components/Toasts';
+import { AxiosError } from 'axios';
+import { clearSession } from '@store/Auth/authReducer';
 
 export const LoginPage = () => {
     const {
-        register,
         handleSubmit,
-        reset,
         control,
         formState: { errors },
     } = useForm<AuthSchema>({
@@ -25,18 +24,32 @@ export const LoginPage = () => {
             password: '',
         },
     });
-    const onSubmit = (form: AuthProps) => {
-        console.log(form);
+    const dispatch: any = useDispatch();
+    const navigate: any = useNavigate();
+    const onSubmit = async (form: AuthProps) => {
+        try {
+            await dispatch(loginUser(form));
+            InfoToast('Добро пожаловать');
+            navigate('/');
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                return ErrorToast(error.response?.data.message);
+            }
+            return ErrorToast('Что-то пошло не так');
+        }
     };
+    React.useEffect(() => {
+        dispatch(clearSession());
+    }, []);
     return (
         <ContainerCentered>
-            <div className='flex flex-col max-w-[420px] w-full gap-6'>
-                <div className='flex flex-col  justify-between items-start w-full py-4'>
+            <div className='flex flex-col items-start max-w-[384px] w-full h-[520px] gap-6 px-3 box-border'>
+                <div className='flex flex-col justify-between items-start w-full py-4 box-border'>
                     <h2 className='text-3xl font-semibold'>Авторизация</h2>
                     <span>Введите данные для входа в приложение</span>
                 </div>
                 <Form
-                    className='w-full box-border flex flex-col rounded-md p-4 items-start justify-between '
+                    className='w-full box-border flex flex-col rounded-md p-4 items-center justify-between '
                     onFinish={handleSubmit(onSubmit)}
                 >
                     <Form.Item
@@ -82,9 +95,11 @@ export const LoginPage = () => {
                             )}
                         />
                     </Form.Item>
-                    <Link className='w-full text-center underline'>Создать аккаунт</Link>
-                    <Button className='mt-4 ' htmlType='submit'>
-                        Войти
+                    <Link className='w-full text-center underline' to={'/auth/sign-up'}>
+                        Создать аккаунт
+                    </Link>
+                    <Button size='large' className='mt-4 w-full' htmlType='submit'>
+                        Войти в систему
                     </Button>
                 </Form>
             </div>
