@@ -25,12 +25,13 @@ const ImageUploader = ({ imageUrl, setImageUrl }: ImageUploaderProps) => {
                             preview={false}
                             className='w-full rounded-sm'
                             src={imageUrl}
-                            alt='Preview'
+                            alt='Некорректная ссылка'
                         />
                     </div>
                 )}
                 <Input
                     placeholder='Введите URL изображения'
+                    allowClear
                     value={imageUrl || ''}
                     size='large'
                     onChange={(event) => handleChange(event.target.value)}

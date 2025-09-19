@@ -22,15 +22,16 @@ export const PostCard = (props: PostProps) => {
                 <div className='flex flex-col justify-between items-end'>
                     <Tooltip
                         className='text-xs font-normal'
-                        placement='right'
                         color='#fff'
+                        placement='bottom'
                         title={
                             props?.modifiedTime &&
-                            'Изменено:' + dateTimeFormatter(props?.modifiedTime)
+                            'Изменено: ' + dateTimeFormatter(props?.modifiedTime)
                         }
                     >
                         <span className='text-xs font-normal'>
                             {dateTimeFormatter(props?.createTime)}
+                            {props?.modifiedTime && ' (Ред.)'}
                         </span>
                     </Tooltip>
                 </div>
