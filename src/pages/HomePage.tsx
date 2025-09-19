@@ -6,12 +6,13 @@ import type { PostProps } from '@models/Post';
 import { useDispatch } from 'react-redux';
 import { fetchPosts } from '@store/Posts/postsAction';
 import { PostCard } from '@components/Post/PostCard';
+import { useEffect, useState } from 'react';
 
 export const HomePage = () => {
     const { posts, isLoading } = useAppSelector((state) => state.postsReducer);
-    const [loadedPosts, setPosts] = React.useState<Array<PostProps>>([]);
+    const [loadedPosts, setPosts] = useState<Array<PostProps>>([]);
     const dispatch: any = useDispatch();
-    React.useEffect(() => {
+    useEffect(() => {
         if (isLoading) {
             setPosts([...Array(3)]);
             dispatch(fetchPosts());

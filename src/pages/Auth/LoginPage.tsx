@@ -11,6 +11,7 @@ import { loginUser } from '@store/Auth/authActions';
 import { ErrorToast, InfoToast } from '@components/Toasts';
 import { AxiosError } from 'axios';
 import { clearSession } from '@store/Auth/authReducer';
+import { useEffect, useState } from 'react';
 
 export const LoginPage = () => {
     const {
@@ -24,9 +25,11 @@ export const LoginPage = () => {
             password: '',
         },
     });
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const dispatch: any = useDispatch();
     const navigate: any = useNavigate();
     const onSubmit = async (form: AuthProps) => {
+        setIsLoading(true);
         try {
             await dispatch(loginUser(form));
             InfoToast('Добро пожаловать');
@@ -36,9 +39,11 @@ export const LoginPage = () => {
                 return ErrorToast(error.response?.data.message);
             }
             return ErrorToast('Что-то пошло не так');
+        } finally {
+            setIsLoading(false);
         }
     };
-    React.useEffect(() => {
+    useEffect(() => {
         dispatch(clearSession());
     }, []);
     return (
@@ -98,7 +103,14 @@ export const LoginPage = () => {
                     <Link className='w-full text-center underline' to={'/auth/sign-up'}>
                         Создать аккаунт
                     </Link>
-                    <Button size='large' className='mt-4 w-full' htmlType='submit'>
+                    <Button
+                        loading={isLoading}
+                        iconPosition='end'
+                        size='large'
+                        type='primary'
+                        className='mt-4 w-full'
+                        htmlType='submit'
+                    >
                         Войти в систему
                     </Button>
                 </Form>

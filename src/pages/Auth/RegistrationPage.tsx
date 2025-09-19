@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { registerUser } from '@store/Auth/authActions';
 import { ErrorToast, SuccessToast } from '@components/Toasts';
 import { AxiosError } from 'axios';
+import { useState } from 'react';
 
 export const RegistrationPage = () => {
     const {
@@ -24,9 +25,11 @@ export const RegistrationPage = () => {
             confirmPassword: '',
         },
     });
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const dispatch: any = useDispatch();
     const navigate: any = useNavigate();
     const onSubmit = async (form: RegisterProps) => {
+        setIsLoading(true);
         try {
             await dispatch(registerUser(form));
             SuccessToast('Добро пожаловать');
@@ -36,6 +39,8 @@ export const RegistrationPage = () => {
                 return ErrorToast(error.response?.data.message);
             }
             return ErrorToast('Что-то пошло не так');
+        } finally {
+            setIsLoading(false);
         }
     };
     return (
@@ -118,7 +123,14 @@ export const RegistrationPage = () => {
                     <Link className='w-full text-center underline' to={'/auth/sign-in'}>
                         Войти в существующий аккаунт
                     </Link>
-                    <Button size='large' className='mt-4 w-full' htmlType='submit'>
+                    <Button
+                        loading={isLoading}
+                        iconPosition='end'
+                        size='large'
+                        type='primary'
+                        className='mt-4 w-full'
+                        htmlType='submit'
+                    >
                         Зарегистрироваться
                     </Button>
                 </Form>
