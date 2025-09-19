@@ -1,4 +1,4 @@
-import type { PostProps } from "@models/POst";
+import type { PostProps } from "@models/Post";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface PostsInit {
@@ -8,7 +8,7 @@ interface PostsInit {
 
 const initialState = {
     posts: [],
-    isLoading: false
+    isLoading: true
 }
 
 const postsSlice = createSlice({

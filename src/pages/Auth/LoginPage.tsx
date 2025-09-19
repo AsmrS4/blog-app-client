@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import type { AuthProps } from '@models/User';
 import { loginUser } from '@store/Auth/authActions';
-import { ErrorToast, SuccessToast } from '@components/Toasts';
+import { ErrorToast, InfoToast } from '@components/Toasts';
 import { AxiosError } from 'axios';
 import { clearSession } from '@store/Auth/authReducer';
 
@@ -29,7 +29,7 @@ export const LoginPage = () => {
     const onSubmit = async (form: AuthProps) => {
         try {
             await dispatch(loginUser(form));
-            SuccessToast('Добро пожаловать');
+            InfoToast('Добро пожаловать');
             navigate('/');
         } catch (error) {
             if (error instanceof AxiosError) {
@@ -98,7 +98,7 @@ export const LoginPage = () => {
                     <Link className='w-full text-center underline' to={'/auth/sign-up'}>
                         Создать аккаунт
                     </Link>
-                    <Button size='large' className='mt-4 ' htmlType='submit'>
+                    <Button size='large' className='mt-4 w-full' htmlType='submit'>
                         Войти в систему
                     </Button>
                 </Form>

@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import type { Dispatch } from "redux";
 import { changeStatus, setPosts } from "./postsReducer";
+import { clearSession } from "@store/Auth/authReducer";
 
-const fetchPosts = () => async(dispatch: Dispatch) => {
+export const fetchPosts = () => async(dispatch: Dispatch) => {
     try {
-        dispatch(changeStatus(true));
         const response = await axios({
             url: `${'http://localhost:8800/api/v1'}/posts`,
             method: 'GET',
@@ -14,6 +14,12 @@ const fetchPosts = () => async(dispatch: Dispatch) => {
         })
         dispatch(setPosts(await response.data));
     } catch (error) {
+        if(error instanceof AxiosError) {
+            if(error.status == 401 || error.status == 403) {
+                dispatch(clearSession());
+                window.location.href='/auth/sign-in';
+            }
+        }
         throw error;
     }
 }

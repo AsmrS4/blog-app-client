@@ -118,7 +118,7 @@ export const RegistrationPage = () => {
                     <Link className='w-full text-center underline' to={'/auth/sign-in'}>
                         Войти в существующий аккаунт
                     </Link>
-                    <Button size='large' className='mt-4 ' htmlType='submit'>
+                    <Button size='large' className='mt-4 w-full' htmlType='submit'>
                         Зарегистрироваться
                     </Button>
                 </Form>

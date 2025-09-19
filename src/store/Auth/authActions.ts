@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { Dispatch } from "redux";
-import { setSession } from "./authReducer";
+import { clearSession, setSession } from "./authReducer";
 import type { AuthResponse } from "@models/Auth";
 import type { AuthProps, RegisterProps } from "@models/User";
 
@@ -20,7 +20,6 @@ export const loginUser = (form: AuthProps) => async(dispatch: Dispatch) => {
     }
 }
 
-
 export const registerUser = (form: RegisterProps) => async(dispatch: Dispatch) => {
     try {
         const response = await axios({
@@ -35,5 +34,20 @@ export const registerUser = (form: RegisterProps) => async(dispatch: Dispatch) =
         dispatch(setSession(data));
     } catch (error) {
         throw error;
+    }
+}
+
+export const logoutUser = () => async(dispatch: Dispatch) => {
+    try {
+        await axios( {
+            url: `${'http://localhost:8800/api/v1'}/auth/logout`,
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('ACCESS_TOKEN')
+            }
+        })
+        dispatch(clearSession());
+    } catch (error) {
+        throw error
     }
 }
