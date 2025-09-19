@@ -54,7 +54,7 @@ export const LoginPage = () => {
                     <span>Введите данные для входа в приложение</span>
                 </div>
                 <Form
-                    className='w-full box-border flex flex-col rounded-md p-4 items-center justify-between '
+                    className='w-full box-border flex flex-col rounded-md p-4 items-center justify-between gap-1'
                     onFinish={handleSubmit(onSubmit)}
                 >
                     <Form.Item

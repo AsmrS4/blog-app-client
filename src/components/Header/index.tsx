@@ -29,7 +29,7 @@ export const Header = () => {
         }
     };
     return (
-        <header className='w-full box-border p-4 h-[80px] shadow-xs'>
+        <header className='w-full box-border p-4 h-[80px] shadow-xs fixed z-1 bg-white'>
             <nav className='w-full box-border h-full flex flex-row items-center justify-between'>
                 <Link to={'/'}>
                     <div className='flex flex-row items-center justify-between h-[40px]'>
@@ -59,7 +59,7 @@ export const Header = () => {
                                     {user?.username}
                                 </span>
                             </span>
-                            <Tooltip placement='left' color='blue' title='Выйти'>
+                            <Tooltip placement='left' color='#fff' title='Выйти'>
                                 <Button
                                     variant='solid'
                                     color='primary'

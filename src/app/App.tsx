@@ -12,7 +12,7 @@ const App = () => {
         <>
             <BrowserRouter>
                 <Header />
-                <main className='w-full h-screen flex flex-col p-4'>
+                <main className='w-full h-screen flex flex-col p-4 pt-[96px]'>
                     <Routes>
                         <Route path='/' element={<PrivateRoute />}>
                             <Route path='/' element={<HomePage />} />
