@@ -21,9 +21,20 @@ const postsSlice = createSlice({
         },
         changeStatus: (state: PostsInit, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
+        },
+        removePost: (state: PostsInit, action: PayloadAction<string>) => {
+            state.posts = state.posts.filter(item => item.id !== action.payload);
+        },
+        setEditedPost: (state: PostsInit, action: PayloadAction<PostProps>) => {
+            state.posts = state.posts.map(item => {
+                item.text = action.payload.text;
+                item.title = action.payload.title;
+                item.image = action.payload.image;
+                return item;
+            })
         }
     }
 });
 
-export const {setPosts, changeStatus} = postsSlice.actions;
+export const {setPosts, changeStatus, removePost, setEditedPost} = postsSlice.actions;
 export default postsSlice.reducer;
