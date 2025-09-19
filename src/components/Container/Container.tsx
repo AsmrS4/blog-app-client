@@ -26,15 +26,15 @@ export const ContainerCustom = ({ size, children }: ContainerProps & SizeProps) 
     switch (size) {
         case 'xs':
             style +=
-                'max-w-[324px] w-full mx-auto box-border flex flex-col items-start justify-between gap-4 py-8';
+                'max-w-[324px] w-full mx-auto box-border flex flex-col items-start justify-between gap-4 pb-8';
             break;
         case 'sm':
             style +=
-                'max-w-[468px] w-full mx-auto box-border flex flex-col items-start justify-between gap-4 py-8';
+                'max-w-[468px] w-full mx-auto box-border flex flex-col items-start justify-between gap-4 pb-8';
             break;
         case 'md':
             style +=
-                'max-w-[524px] w-full mx-auto box-border flex flex-col items-start justify-between gap-4 py-8';
+                'max-w-[524px] w-full mx-auto box-border flex flex-col items-start justify-between gap-4 pb-8';
             break;
         case 'lg':
             style +=
