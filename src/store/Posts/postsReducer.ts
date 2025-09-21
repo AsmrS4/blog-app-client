@@ -27,9 +27,11 @@ const postsSlice = createSlice({
         },
         setEditedPost: (state: PostsInit, action: PayloadAction<PostProps>) => {
             state.posts = state.posts.map(item => {
-                item.text = action.payload.text;
-                item.title = action.payload.title;
-                item.image = action.payload.image;
+                if(item.id === action.payload.id) {
+                    item.text = action.payload.text;
+                    item.title = action.payload.title;
+                    item.image = action.payload.image;
+                }
                 return item;
             })
         }

@@ -13,5 +13,5 @@ export interface PostProps {
 export interface EditPostProps {
     title: string;
     text: string;
-    image?: string
+    image?: string | null
 }

@@ -11,7 +11,7 @@ import { deletePost } from '@store/Posts/postsAction';
 import { clearSession } from '@store/Auth/authReducer';
 import { dateTimeFormatter } from '@utils/utils';
 
-export const PostCard = (props: PostProps) => {
+export const PostCard = (props: PostProps & { handleEdit: () => void }) => {
     const { user } = useAppSelector((state) => state.authReducer);
     const dispatch: any = useDispatch();
     const navigate: any = useNavigate();
@@ -43,6 +43,7 @@ export const PostCard = (props: PostProps) => {
                     icon={<EditOutlined />}
                     color='default'
                     variant='link'
+                    onClick={props.handleEdit}
                 >
                     Изменить
                 </Button>

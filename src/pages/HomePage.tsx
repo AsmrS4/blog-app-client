@@ -10,18 +10,21 @@ import { useNavigate } from 'react-router-dom';
 import { ContainerCustom } from '@components/Container/Container';
 import ImageUploader from '@components/Image/ImageUploader';
 import { PostCard } from '@components/Post/PostCard';
-import { ErrorToast } from '@components/Toasts';
+import { ErrorToast, InfoToast } from '@components/Toasts';
 import { useAppSelector } from '@hooks/useAppSelector';
-import type { PostProps } from '@models/Post';
+import type { EditPostProps, PostProps } from '@models/Post';
 import { clearSession } from '@store/Auth/authReducer';
-import { fetchPosts } from '@store/Posts/postsAction';
+import { editPost, fetchPosts } from '@store/Posts/postsAction';
 import { postSchema, type PostSchema } from './post.config';
 
 export const HomePage = () => {
     const { posts, isLoading } = useAppSelector((state) => state.postsReducer);
-    const [loadedPosts, setPosts] = useState<Array<PostProps>>([]);
-    const [isOpen, setIsOpen] = useState<boolean>(false);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const [loadedPosts, setPosts] = useState<Array<PostProps>>([]);
+    const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
+    const [isEditModalOpen, setEditModalOpen] = useState<boolean>(false);
+    const [postId, setPostId] = useState<string | null>(null);
+
     const dispatch: any = useDispatch();
     const navigate: any = useNavigate();
     const {
@@ -30,6 +33,7 @@ export const HomePage = () => {
         formState: { errors },
         reset,
         getValues,
+        setValue,
     } = useForm<PostSchema>({
         resolver: zodResolver(postSchema),
         defaultValues: {
@@ -68,10 +72,43 @@ export const HomePage = () => {
             }
         }
     };
+    const handleEditPost = async (editedPost: EditPostProps) => {
+        try {
+            dispatch(
+                editPost(postId, {
+                    title: editedPost.title,
+                    text: editedPost.text,
+                    image: imageUrl,
+                }),
+            );
+            InfoToast('Данные успешно обновлены');
+            handleClose();
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                if (error.status == 401 || error.status == 403) {
+                    dispatch(clearSession());
+                    navigate('/auth/sign-in');
+                } else if (error.status == 400) {
+                    return ErrorToast('Некорректные данные');
+                } else {
+                    return ErrorToast('Ошибка сервера');
+                }
+            }
+        }
+    };
+    const handleEditModal = (post: PostProps) => {
+        setPostId(post.id);
+        setValue('title', post.title);
+        setValue('text', post.text);
+        setImageUrl(post.image || null);
+        setEditModalOpen(true);
+    };
     const handleClose = () => {
         reset();
         setImageUrl(null);
-        setIsOpen(false);
+        setPostId(null);
+        setCreateModalOpen(false);
+        setEditModalOpen(false);
     };
     useEffect(() => {
         if (isLoading) {
@@ -89,7 +126,7 @@ export const HomePage = () => {
                 size='large'
                 icon={<PlusOutlined />}
                 onClick={() => {
-                    setIsOpen(true);
+                    setCreateModalOpen(true);
                 }}
             >
                 Создать пост
@@ -99,7 +136,13 @@ export const HomePage = () => {
                     return (
                         <>
                             <Skeleton key={index} loading={isLoading} active>
-                                <PostCard key={item?.id} {...item} />
+                                <PostCard
+                                    key={item?.id}
+                                    {...item}
+                                    handleEdit={() => {
+                                        handleEditModal(item);
+                                    }}
+                                />
                             </Skeleton>
                         </>
                     );
@@ -107,9 +150,60 @@ export const HomePage = () => {
             </ul>
             <Modal
                 title='Создать пост'
-                open={isOpen}
+                open={isCreateModalOpen}
                 onOk={handleSubmit(handleSubmitPost)}
                 okText='Создать'
+                cancelText='Отменить'
+                cancelButtonProps={{ danger: true }}
+                onCancel={handleClose}
+            >
+                <Form className='flex flex-col justify-between my-6'>
+                    <ImageUploader imageUrl={imageUrl} setImageUrl={setImageUrl} />
+                    <Form.Item
+                        help={errors.title?.message}
+                        validateStatus={errors.title ? 'error' : ''}
+                    >
+                        <Controller
+                            name='title'
+                            control={control}
+                            render={({ field }) => (
+                                <Input
+                                    allowClear
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    size='large'
+                                    className='w-full mt-6'
+                                    placeholder='Название...'
+                                />
+                            )}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        help={errors.text?.message}
+                        validateStatus={errors.text ? 'error' : ''}
+                    >
+                        <Controller
+                            name='text'
+                            control={control}
+                            render={({ field }) => (
+                                <Input.TextArea
+                                    allowClear
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    size='large'
+                                    className='w-full'
+                                    placeholder='Описание...'
+                                />
+                            )}
+                        />
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+                title='Редактировать пост'
+                open={isEditModalOpen}
+                onOk={handleSubmit(handleEditPost)}
+                okText='Сохранить'
                 cancelText='Отменить'
                 cancelButtonProps={{ danger: true }}
                 onCancel={handleClose}
