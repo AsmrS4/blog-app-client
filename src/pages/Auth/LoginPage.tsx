@@ -1,16 +1,18 @@
-import { useForm, Controller } from 'react-hook-form';
-import { Button, Form, Input } from 'antd';
-import { useDispatch } from 'react-redux';
 import { UserOutlined, EyeInvisibleOutlined, EyeTwoTone, LockOutlined } from '@ant-design/icons';
-import { authSchema, type AuthSchema } from './config';
-import { ContainerCentered } from '@components/Container/Container';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Button, Form, Input } from 'antd';
+import { AxiosError } from 'axios';
+import { useForm, Controller } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
+import { ContainerCentered } from '@components/Container/Container';
+import { ErrorToast, InfoToast } from '@components/Toasts';
+import { zodResolver } from '@hookform/resolvers/zod';
 import type { AuthProps } from '@models/User';
 import { loginUser } from '@store/Auth/authActions';
-import { ErrorToast, InfoToast } from '@components/Toasts';
-import { AxiosError } from 'axios';
 import { clearSession } from '@store/Auth/authReducer';
+import { authSchema, type AuthSchema } from './config';
 
 export const LoginPage = () => {
     const {
@@ -24,9 +26,11 @@ export const LoginPage = () => {
             password: '',
         },
     });
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const dispatch: any = useDispatch();
     const navigate: any = useNavigate();
     const onSubmit = async (form: AuthProps) => {
+        setIsLoading(true);
         try {
             await dispatch(loginUser(form));
             InfoToast('Добро пожаловать');
@@ -36,9 +40,11 @@ export const LoginPage = () => {
                 return ErrorToast(error.response?.data.message);
             }
             return ErrorToast('Что-то пошло не так');
+        } finally {
+            setIsLoading(false);
         }
     };
-    React.useEffect(() => {
+    useEffect(() => {
         dispatch(clearSession());
     }, []);
     return (
@@ -49,7 +55,7 @@ export const LoginPage = () => {
                     <span>Введите данные для входа в приложение</span>
                 </div>
                 <Form
-                    className='w-full box-border flex flex-col rounded-md p-4 items-center justify-between '
+                    className='w-full box-border flex flex-col rounded-md p-4 items-center justify-between gap-1'
                     onFinish={handleSubmit(onSubmit)}
                 >
                     <Form.Item
@@ -98,7 +104,14 @@ export const LoginPage = () => {
                     <Link className='w-full text-center underline' to={'/auth/sign-up'}>
                         Создать аккаунт
                     </Link>
-                    <Button size='large' className='mt-4 w-full' htmlType='submit'>
+                    <Button
+                        loading={isLoading}
+                        iconPosition='end'
+                        size='large'
+                        type='primary'
+                        className='mt-4 w-full'
+                        htmlType='submit'
+                    >
                         Войти в систему
                     </Button>
                 </Form>

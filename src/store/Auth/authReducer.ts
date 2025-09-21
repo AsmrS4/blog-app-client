@@ -1,6 +1,6 @@
+import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
 import type { AuthResponse } from '@models/Auth';
 import type { UserProps } from '@models/User';
-import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
 
 interface AuthInit  {
     token: string | null;

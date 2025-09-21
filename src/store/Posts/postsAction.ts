@@ -1,7 +1,9 @@
 import axios, { AxiosError } from "axios";
 import type { Dispatch } from "redux";
-import { changeStatus, setPosts } from "./postsReducer";
+
 import { clearSession } from "@store/Auth/authReducer";
+import type { EditPostProps, PostProps } from "@models/Post";
+import { removePost, setEditedPost, setPosts } from "./postsReducer";
 
 export const fetchPosts = () => async(dispatch: Dispatch) => {
     try {
@@ -21,5 +23,39 @@ export const fetchPosts = () => async(dispatch: Dispatch) => {
             }
         }
         throw error;
+    }
+}
+
+export const editPost = (postId: string, post: EditPostProps) => async(dispatch: Dispatch) => {
+    try {
+        const response = await axios({
+            url: `${'http://localhost:8800/api/v1'}/posts/${postId}`,
+            method: 'PUT',
+            data: {
+                ...post
+            }, 
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('ACCESS_TOKEN')
+            }
+        });
+        const editedPost: PostProps = await response.data;
+        dispatch(setEditedPost(editedPost));
+    } catch (error) {
+        throw error
+    }
+}
+
+export const deletePost = (postId:string) => async(dispatch:Dispatch) => {
+    try {
+        await axios({
+            url: `${'http://localhost:8800/api/v1'}/posts/${postId}`,
+            method: 'DELETE',
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('ACCESS_TOKEN')
+            }
+        });
+        dispatch(removePost(postId));
+    } catch (error) {
+        throw error
     }
 }

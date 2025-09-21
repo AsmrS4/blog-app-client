@@ -1,13 +1,13 @@
-import { AntCloudOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { ErrorToast } from '@components/Toasts';
-import { useAppSelector } from '@hooks/useAppSelector';
-import { logoutUser } from '@store/Auth/authActions';
-import { clearSession } from '@store/Auth/authReducer';
-import { FormOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 import { AxiosError } from 'axios';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
+
+import { ErrorToast } from '@components/Toasts';
+import { useAppSelector } from '@hooks/useAppSelector';
+import { logoutUser } from '@store/Auth/authActions';
+import { clearSession } from '@store/Auth/authReducer';
 
 export const Header = () => {
     const { user, isAuth } = useAppSelector((state) => state.authReducer);
@@ -28,15 +28,17 @@ export const Header = () => {
             return ErrorToast('Что-то пошло не так');
         }
     };
-    return (
-        <header className='w-full box-border p-4 h-[80px] shadow-xs'>
-            <nav className='w-full box-border h-full flex flex-row items-center justify-between'>
-                <Link to={'/'}>
-                    <div className='flex flex-row items-center justify-between h-[40px]'>
-                        <h2 className='font-bold text-blue-500 text-xl'>HIT's Блог</h2>
-                    </div>
-                </Link>
 
+    return (
+        <header className='w-full box-border p-4 h-[60px] shadow-xs fixed z-1 bg-white'>
+            <nav className='m-auto max-w-[1200px] w-full box-border h-full flex flex-row items-center justify-between'>
+                <div className='flex flex-row justify-between items-center gap-6'>
+                    <Link to={'/'}>
+                        <div className='flex flex-row items-center justify-between h-[40px]'>
+                            <h2 className='font-bold text-blue-500 text-xl'>HIT's Блог</h2>
+                        </div>
+                    </Link>
+                </div>
                 <div className='flex flex-row items-center justify-betweenv gap-3 box-border'>
                     {isAuth && (
                         <>
@@ -59,7 +61,7 @@ export const Header = () => {
                                     {user?.username}
                                 </span>
                             </span>
-                            <Tooltip placement='left' color='blue' title='Выйти'>
+                            <Tooltip color='#fff' title='Выйти'>
                                 <Button
                                     variant='solid'
                                     color='primary'
