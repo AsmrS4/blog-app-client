@@ -1,14 +1,13 @@
-import { AntCloudOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { ErrorToast } from '@components/Toasts';
-import { useAppSelector } from '@hooks/useAppSelector';
-import { logoutUser } from '@store/Auth/authActions';
-import { clearSession } from '@store/Auth/authReducer';
-import { FormOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 import { AxiosError } from 'axios';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
+
+import { ErrorToast } from '@components/Toasts';
+import { useAppSelector } from '@hooks/useAppSelector';
+import { logoutUser } from '@store/Auth/authActions';
+import { clearSession } from '@store/Auth/authReducer';
 
 export const Header = () => {
     const { user, isAuth } = useAppSelector((state) => state.authReducer);

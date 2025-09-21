@@ -1,14 +1,15 @@
-import { useAppSelector } from '@hooks/useAppSelector';
-import type { PostProps } from '@models/Post';
-import { dateTimeFormatter } from '@utils/utils';
+import { AxiosError } from 'axios';
 import { Button, Dropdown, Tooltip, type MenuProps } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { deletePost } from '@store/Posts/postsAction';
-import { AxiosError } from 'axios';
+
 import { ErrorToast } from '@components/Toasts';
+import { useAppSelector } from '@hooks/useAppSelector';
+import type { PostProps } from '@models/Post';
+import { deletePost } from '@store/Posts/postsAction';
 import { clearSession } from '@store/Auth/authReducer';
+import { dateTimeFormatter } from '@utils/utils';
 
 export const PostCard = (props: PostProps) => {
     const { user } = useAppSelector((state) => state.authReducer);
@@ -94,7 +95,7 @@ export const PostCard = (props: PostProps) => {
                     <Tooltip
                         className='text-xs font-normal'
                         color='#fff'
-                        placement='bottom'
+                        placement='bottomRight'
                         title={
                             props?.modifiedTime &&
                             'Изменено: ' + dateTimeFormatter(props?.modifiedTime)

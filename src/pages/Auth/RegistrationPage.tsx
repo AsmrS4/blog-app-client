@@ -1,16 +1,17 @@
-import { Controller, useForm } from 'react-hook-form';
 import { UserOutlined, EyeInvisibleOutlined, EyeTwoTone, LockOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
-import { registerSchema, type RegisterSchema } from './config';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { ContainerCentered } from '@components/Container/Container';
-import { Link, useNavigate } from 'react-router-dom';
-import type { RegisterProps } from '@models/User';
-import { useDispatch } from 'react-redux';
-import { registerUser } from '@store/Auth/authActions';
-import { ErrorToast, SuccessToast } from '@components/Toasts';
 import { AxiosError } from 'axios';
 import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+
+import { ContainerCentered } from '@components/Container/Container';
+import { ErrorToast, SuccessToast } from '@components/Toasts';
+import { zodResolver } from '@hookform/resolvers/zod';
+import type { RegisterProps } from '@models/User';
+import { registerUser } from '@store/Auth/authActions';
+import { registerSchema, type RegisterSchema } from './config';
 
 export const RegistrationPage = () => {
     const {

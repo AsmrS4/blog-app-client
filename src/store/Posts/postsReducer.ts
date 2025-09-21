@@ -1,5 +1,5 @@
-import type { PostProps } from "@models/Post";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { PostProps } from "@models/Post";
 
 interface PostsInit {
     posts: Array<PostProps>

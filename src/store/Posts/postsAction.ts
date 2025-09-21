@@ -1,8 +1,9 @@
 import axios, { AxiosError } from "axios";
 import type { Dispatch } from "redux";
-import { changeStatus, removePost, setEditedPost, setPosts } from "./postsReducer";
+
 import { clearSession } from "@store/Auth/authReducer";
 import type { EditPostProps, PostProps } from "@models/Post";
+import { removePost, setEditedPost, setPosts } from "./postsReducer";
 
 export const fetchPosts = () => async(dispatch: Dispatch) => {
     try {

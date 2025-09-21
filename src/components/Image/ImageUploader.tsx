@@ -1,4 +1,4 @@
-import { Input, Image, Button } from 'antd';
+import { Input, Image } from 'antd';
 
 interface ImageUploaderProps {
     imageUrl: string | null;
