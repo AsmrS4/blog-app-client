@@ -16,6 +16,7 @@ import type { EditPostProps, PostProps } from '@models/Post';
 import { clearSession } from '@store/Auth/authReducer';
 import { editPost, fetchPosts } from '@store/Posts/postsAction';
 import { postSchema, type PostSchema } from './post.config';
+import { setNewPost } from '@store/Posts/postsReducer';
 
 export const HomePage = () => {
     const { posts, isLoading } = useAppSelector((state) => state.postsReducer);
@@ -56,10 +57,9 @@ export const HomePage = () => {
                 },
             });
             const newPost: PostProps = await response.data;
-            setPosts((prev) => [newPost, ...prev]);
+            dispatch(setNewPost(newPost));
             handleClose();
         } catch (error) {
-            console.log(error);
             if (error instanceof AxiosError) {
                 if (error.status == 401 || error.status == 403) {
                     dispatch(clearSession());
@@ -111,6 +111,7 @@ export const HomePage = () => {
         setEditModalOpen(false);
     };
     useEffect(() => {
+        console.log(posts);
         if (isLoading) {
             setPosts([...Array(3)]);
             dispatch(fetchPosts());
