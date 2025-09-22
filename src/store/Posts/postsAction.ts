@@ -26,7 +26,7 @@ export const fetchPosts = () => async(dispatch: Dispatch) => {
     }
 }
 
-export const editPost = (postId: string, post: EditPostProps) => async(dispatch: Dispatch) => {
+export const editPost = (postId: string | null, post: EditPostProps) => async(dispatch: Dispatch) => {
     try {
         const response = await axios({
             url: `${'http://localhost:8800/api/v1'}/posts/${postId}`,
