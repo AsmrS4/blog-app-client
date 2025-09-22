@@ -27,14 +27,20 @@ const postsSlice = createSlice({
         },
         setEditedPost: (state: PostsInit, action: PayloadAction<PostProps>) => {
             state.posts = state.posts.map(item => {
-                item.text = action.payload.text;
-                item.title = action.payload.title;
-                item.image = action.payload.image;
+                if(item.id === action.payload.id) {
+                    return {
+                        ...item,
+                        ...action.payload
+                    }
+                }
                 return item;
             })
+        }, 
+        setNewPost: (state: PostsInit, action: PayloadAction<PostProps>) => {
+            state.posts = [action.payload, ...state.posts]
         }
     }
 });
 
-export const {setPosts, changeStatus, removePost, setEditedPost} = postsSlice.actions;
+export const {setPosts, changeStatus, removePost, setEditedPost, setNewPost} = postsSlice.actions;
 export default postsSlice.reducer;
