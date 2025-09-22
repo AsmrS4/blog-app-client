@@ -1,6 +1,12 @@
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Button, Dropdown, Tooltip, type MenuProps } from 'antd';
-import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+    MoreOutlined,
+    EditOutlined,
+    DeleteOutlined,
+    HeartOutlined,
+    HeartFilled,
+} from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,15 +16,14 @@ import type { PostProps } from '@models/Post';
 import { deletePost } from '@store/Posts/postsAction';
 import { clearSession } from '@store/Auth/authReducer';
 import { dateTimeFormatter } from '@utils/utils';
+import { useEffect, useState } from 'react';
 
 export const PostCard = (props: PostProps & { handleEdit: () => void }) => {
     const { user } = useAppSelector((state) => state.authReducer);
+    const [likeCount, setLikeCount] = useState<number>(0);
+    const [hasLike, setHasLike] = useState<boolean>(false);
     const dispatch: any = useDispatch();
     const navigate: any = useNavigate();
-    const handleEditPost = async () => {
-        try {
-        } catch (error) {}
-    };
     const handleDeletePost = async () => {
         try {
             await dispatch(deletePost(props.id));
@@ -34,6 +39,76 @@ export const PostCard = (props: PostProps & { handleEdit: () => void }) => {
             return ErrorToast('Что-то пошло не так');
         }
     };
+    const handleSetLike = async () => {
+        try {
+            await axios({
+                url: `${'http://localhost:8800/api/v1'}/posts/like/${props.id}`,
+                method: 'POST',
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('ACCESS_TOKEN'),
+                },
+            });
+            setHasLike(true);
+            setLikeCount((prev) => ++prev);
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                if (error.status === 401 || error.status === 403) {
+                    dispatch(clearSession());
+                    navigate('/auth/sign-in');
+                } else {
+                    return ErrorToast('Не удалось обработать запрос');
+                }
+            }
+            return ErrorToast('Что-то пошло не так');
+        }
+    };
+    const handleRemoveLike = async () => {
+        try {
+            await axios({
+                url: `${'http://localhost:8800/api/v1'}/posts/like/${props.id}`,
+                method: 'DELETE',
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('ACCESS_TOKEN'),
+                },
+            });
+            setHasLike(false);
+            setLikeCount((prev) => (prev > 0 ? --prev : 0));
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                if (error.status === 401 || error.status === 403) {
+                    dispatch(clearSession());
+                    navigate('/auth/sign-in');
+                } else {
+                    return ErrorToast('Не удалось обработать запрос');
+                }
+            }
+            return ErrorToast('Что-то пошло не так');
+        }
+    };
+    const handleFetchLikes = async () => {
+        try {
+            const response = await axios({
+                url: `${'http://localhost:8800/api/v1'}/posts/count/${props.id}`,
+                method: 'GET',
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('ACCESS_TOKEN'),
+                },
+            });
+            const { hasLike, count } = await response.data;
+            setHasLike(hasLike);
+            setLikeCount(count);
+        } catch (error) {}
+    };
+    const handleClick = async () => {
+        if (hasLike) {
+            handleRemoveLike();
+        } else {
+            handleSetLike();
+        }
+    };
+    useEffect(() => {
+        handleFetchLikes();
+    }, []);
     const items: MenuProps['items'] = [
         {
             key: '1',
@@ -91,7 +166,10 @@ export const PostCard = (props: PostProps & { handleEdit: () => void }) => {
                 <pre className='text-wrap text-sm font-normal'>{props?.text}</pre>
             </div>
             <div className='footer flex flex-row w-full justify-between py-2 px-3'>
-                <span>{}</span>
+                <span className='cursor-pointer font-medium text-sm' onClick={handleClick}>
+                    {hasLike ? <HeartFilled style={{ color: 'red' }} /> : <HeartOutlined />}{' '}
+                    {likeCount}
+                </span>
                 <div className='flex flex-col justify-between items-end'>
                     <Tooltip
                         className='text-xs font-normal'
