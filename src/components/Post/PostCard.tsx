@@ -87,16 +87,18 @@ export const PostCard = (props: PostProps & { handleEdit: () => void }) => {
     };
     const handleFetchLikes = async () => {
         try {
-            const response = await axios({
-                url: `${'http://localhost:8800/api/v1'}/posts/count/${props.id}`,
-                method: 'GET',
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem('ACCESS_TOKEN'),
-                },
-            });
-            const { hasLike, count } = await response.data;
-            setHasLike(hasLike);
-            setLikeCount(count);
+            if (props.id) {
+                const response = await axios({
+                    url: `${'http://localhost:8800/api/v1'}/posts/count/${props.id}`,
+                    method: 'GET',
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.getItem('ACCESS_TOKEN'),
+                    },
+                });
+                const { hasLike, count } = await response.data;
+                setHasLike(hasLike);
+                setLikeCount(count);
+            }
         } catch (error) {}
     };
     const handleClick = async () => {
