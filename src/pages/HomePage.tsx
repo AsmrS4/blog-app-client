@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { ContainerCustom } from '@components/Container/Container';
 import ImageUploader from '@components/Image/ImageUploader';
 import { PostCard } from '@components/Post/PostCard';
-import { ErrorToast, InfoToast } from '@components/Toasts';
+import { ErrorToast, InfoToast, SuccessToast } from '@components/Toasts';
 import { useAppSelector } from '@hooks/useAppSelector';
 import type { EditPostProps, PostProps } from '@models/Post';
 import { clearSession } from '@store/Auth/authReducer';
@@ -59,6 +59,7 @@ export const HomePage = () => {
             const newPost: PostProps = await response.data;
             dispatch(setNewPost(newPost));
             handleClose();
+            return SuccessToast('Пост успешно создан');
         } catch (error) {
             if (error instanceof AxiosError) {
                 if (error.status == 401 || error.status == 403) {
@@ -111,7 +112,6 @@ export const HomePage = () => {
         setEditModalOpen(false);
     };
     useEffect(() => {
-        console.log(posts);
         if (isLoading) {
             setPosts([...Array(3)]);
             dispatch(fetchPosts());
